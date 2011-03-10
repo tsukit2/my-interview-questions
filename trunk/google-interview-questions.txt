@@ -1,0 +1,12 @@
+- clock hands angles
+- depth/breath first tree walking
+- fibonacci algorithm
+- How many tries will you need to find out a heavy ball from a set of 9 balls. How can you minimize these tries.
+- Design a class to process a matrix, and it needs to be able to return the average for the elements of arbitrary sub-rectangle inside that matrix, in constant time
+- Design a class to serialize / deserialze a graph
+- matrix math operations
+- sort algorithms
+- travelling sales man problem
+- suffix trees
+- parallel algorithms
+- 
