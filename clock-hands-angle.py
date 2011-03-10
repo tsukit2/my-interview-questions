@@ -15,6 +15,9 @@
 # the degree by subtracting the greater with lesser. The result can be used as if we don't care
 # where we measure the angle from (e.g. invert or outvert). If we do care only the invert,
 # we simply choose the smaller angle of the result and (360 - result).
+#
+# use this web-base clock to observe/verify result
+# http://www.oswego.org/ocsd-web/games/ClassClock/clockres.html
 
 # how many angles between hour i and i+1
 hour_angle_width = 360 / 12
