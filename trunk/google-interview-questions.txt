@@ -10,3 +10,6 @@
 - suffix trees
 - parallel algorithms
 - tower of hanoi
+- hash key generation
+- balancing binary tree, AVL?
+- heap 
