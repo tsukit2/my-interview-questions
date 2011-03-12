@@ -86,4 +86,47 @@ def merge_sort(l):
    return merge(left, right)
 
 
+# quick_sort: this is another divide-and-conquer approach. It's different from merge sort that
+# the partition is based on a pivot value. Pivot value can be selected in different ways:
+# left-most, median value (in this implementation) or mediam of first/middle/last values. Since
+# the partition is based on value, the merge is as simple as concatenating the partitions.
+# This alogirhtm has O(n^2) and O(n log n) on average. The peroformance largely depends on the
+# selection of the pivot value that could result to equal partition sizes. 
+def quick_sort(l):
+   if len(l) <= 1: return l
+   left = []
+   right = []
+   pivot = []
+   pivot_value = l[int(len(l) / 2)]
+   for n in l:
+      if n > pivot_value:
+         right.append(n)
+      elif n < pivot_value:
+         left.append(n)
+      else:
+         pivot.append(n)
+   return quick_sort(left) + pivot + quick_sort(right)
+
+
+# quick sort inplace: this is similar to the original except that it sort elements in this
+# to perform faster because there is no data copy. However, the complexity is still the same for
+# time. Only space is improved.
+def quick_sort_inplace(l, start, end):
+   def partition(s, e, p):
+      pval = l[p]
+      l[p], l[e] = l[e], l[p]
+      store = s
+      for n in range(s, e):
+         if l[n] <= pval:
+            l[n], l[store] = l[store], l[n]
+            store += 1
+      l[store], l[e] = l[e], l[store]
+      return store
+
+   if start >= end: return
+   pivot = partition(start, end, start + int((end-start) / 2))
+   quick_sort_inplace(l, start, pivot-1)
+   quick_sort_inplace(l, pivot+1, end)
+   
+
 
