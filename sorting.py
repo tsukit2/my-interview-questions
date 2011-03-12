@@ -1,3 +1,8 @@
+# Q: Describe how different sorting algorithms work
+
+# A: There are various sorting algorithm, each has different efficientcy level
+# some algorithms might be inefficient for large data set but very fast for 
+# small data set
 
 # bubble sort: keep repeatedly swapping items in each iteration until no swap is needed
 # this has O(n^2) time and O(1) space because it's in-place sort. Good if the data sort of
