@@ -16,6 +16,7 @@ class BinaryTree:
    # to insert, compare the inserted value with the current node. If value is equals to or greater than, 
    # move down to its right child, if any, and attemp to insert there. If it's less than, move to
    # the left child. If no child, stop there. Then insert the node either at left or right
+   # this has O(h) complexity.
    def insert(self, t):
       node = child = self
       while child != None:
@@ -35,6 +36,7 @@ class BinaryTree:
    # in parent. If it does have one child (either left or right), pull it up and make the parent
    # point to it. If it has two children, find its successor (could be way down below). Then
    # recursively delete the successor and use its value to replace the node being deleted.
+   # this has O(h) complexity.
    def delete(self):
       # case 1: no children. we just remove it from parent
       if self.left == None and self.right == None:
@@ -64,6 +66,7 @@ class BinaryTree:
          self.value = succ.value
 
    # to find minimum, just go all the way left 
+   # this has O(h) complexity.
    def minimum(self):
       node = self
       while node.left:
@@ -71,6 +74,7 @@ class BinaryTree:
       return node
      
    # to find maximum, just go all the way right
+   # this has O(h) complexity.
    def maximum(self):
       node = self
       while node.right:
@@ -80,6 +84,7 @@ class BinaryTree:
    # to find successor, if it has the right child, find the minimum from the left child tree
    # otherwise, keep going up to the parent in the chain whose value is *greater* than the current
    # node in the chain
+   # this has O(h) complexity.
    def successor(self):
       if self.right:
          return self.right.minimum()
@@ -93,6 +98,7 @@ class BinaryTree:
 
    # to find a value n, check if the current node's value equals to it. If not, see if n is
    # greater than the node, if so, move on to the right child node, or left child if less than
+   # this has O(h) complexity.
    def find(self, n):
       node = self
       while node and node.value != n:
