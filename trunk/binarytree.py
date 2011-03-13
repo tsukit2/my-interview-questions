@@ -16,7 +16,7 @@ class BinaryTree:
    # to insert, compare the inserted value with the current node. If value is equals to or greater than, 
    # move down to its right child, if any, and attemp to insert there. If it's less than, move to
    # the left child. If no child, stop there. Then insert the node either at left or right
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def insert(self, t):
       node = child = self
       while child != None:
@@ -36,7 +36,7 @@ class BinaryTree:
    # in parent. If it does have one child (either left or right), pull it up and make the parent
    # point to it. If it has two children, find its successor (could be way down below). Then
    # recursively delete the successor and use its value to replace the node being deleted.
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def delete(self):
       # case 1: no children. we just remove it from parent
       if self.left == None and self.right == None:
@@ -66,7 +66,7 @@ class BinaryTree:
          self.value = succ.value
 
    # to find minimum, just go all the way left 
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def minimum(self):
       node = self
       while node.left:
@@ -74,17 +74,17 @@ class BinaryTree:
       return node
      
    # to find maximum, just go all the way right
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def maximum(self):
       node = self
       while node.right:
          node = node.right
       return node
 
-   # to find successor, if it has the right child, find the minimum from the left child tree
+   # to find successor, if it has the right child, find the minimum from the right child tree
    # otherwise, keep going up to the parent in the chain whose value is *greater* than the current
    # node in the chain
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def successor(self):
       if self.right:
          return self.right.minimum()
@@ -96,9 +96,24 @@ class BinaryTree:
          parent = parent.parent
       return parent
 
+   # to find predecessor, if it has the left child, find the maximum from the left child tree
+   # otherwise, keep going up to the parent in the chain whose value is *less* than the current
+   # node in the chain
+   # this has O(n) complexity but O(log n) if tree is balanced.
+   def predecessor(self):
+      if self.left:
+         return self.left.maximum()
+
+      node = self
+      parent = self.parent
+      while parent and parent.value > node.value:
+         node = parent
+         parent = parent.parent
+      return parent
+
    # to find a value n, check if the current node's value equals to it. If not, see if n is
    # greater than the node, if so, move on to the right child node, or left child if less than
-   # this has O(h) complexity.
+   # this has O(n) complexity but O(log n) if tree is balanced.
    def find(self, n):
       node = self
       while node and node.value != n:
