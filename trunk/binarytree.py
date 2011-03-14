@@ -123,13 +123,27 @@ class BinaryTree:
             node = node.left
       return node
 
+   # return the root of the node
+   def root(self):
+      root = self
+      while root.parent:
+         root = root.parent
+      return root
+
+   def show(self, char='.', level=0):
+      print(char * level, self.value)
+      if self.left:
+         self.left.show('-', level + 2)
+      if self.right:
+         self.right.show('+', level + 2)
+      
+
 sampletree = BinaryTree(15)
 for n in [5, 16, 3, 12, 20, 10, 13, 18, 23, 7, 6]:
    sampletree.insert(BinaryTree(n))
 
-            
-
-
-
+sampletree2 = BinaryTree(0)
+for n in range(1,10):
+   sampletree2.insert(BinaryTree(n))
       
       
