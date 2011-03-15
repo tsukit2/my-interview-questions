@@ -25,3 +25,10 @@
 # This algorith takes O(V^3) as it has 3 inner loops.
 #
 # To construct a path, just walk the matrix backward starting i,j then i,k -> i,k-1...
+
+# With this shortest information in place, a simple version of travelling sales problem can be
+# very easily. Given vertices A, B, C, D to travel. Just pick the shortest path between
+# (A,B), (A,C), and (A,D). Say C is chosen, further find shortest path between (C,B) and
+# (C,D). When done that's the first answer. The path (A,C,B,D) can then be swap between
+# two vertices and calculate the path. This iteration can be as long as need to see if
+# the shorter path can be obtained.
