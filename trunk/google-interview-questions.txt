@@ -13,3 +13,4 @@
 - hash key generation
 - balancing binary tree, AVL?
 - heap 
+- parsing algorithm

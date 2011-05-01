@@ -1,0 +1,178 @@
+Overview
+=======
+- Focus on reuse. Each app can provide reuse comps (activity and service) and other apps
+  can use them.
+- Content provider allows one app to access the data of another.
+- activity manager manage life cycle of apps and navigation stack
+- Dalvik is optimized vm that allow multiple vm on device efficiently. It execute dex file
+  which is a transformed java class files. It relies on kernel to do memory management and
+  threading.
+- Each app is a different user once installed on device. this create it's own sandbox
+- Each process run in it's own vm. And it runs in it's own Linux process by default. The
+  process is created whenever any part of the app need to be executed and terminated when
+  it's no longer needed or low memory.
+- app requests permission by declaration in manifest file
+- four different comps in an app: activity, service, content provider, and broadcast
+  receiver
+- Each comps in the app such as activity is an entry point to the app.
+- Activity represent a single screen with user interface.
+- Broadcast receiver is to listen to some system wide notification and so something with
+  it. An app can also broadcast certain notification tobother.  BR does have a ui nut can
+  create a status bar notification
+- Content provider may be used both externally and internally.
+- An android app can start any part of another app, creating seamless integration
+- intent is an asynchronous message system. It can start an activity, service or broadcast
+  receiver
+- Returned result from activation's also an intent.
+- Intent can be used to broadcast notification
+- Content provider us activated by content resolved. Content resolved is sandwiched
+  between the consumer and provider, creating abstraction.
+- Manifest file declares hardware and software feature used in the app
+- All app components must be declare in manifest file or the system won't know them and
+  they cannot run
+- Declare requirement in manifest file: screen size and density, input configuration,
+  device feature, and platform version
+- Some capabilities can be checked at runtime
+- Separating resource from code allows alternations for different devices such as
+  language, screen layouts, image resolution. This is a way to fight fragmentation but not
+  an effective one
+
+Activity
+========
+- screen for an activity may not be full screen and float on top of other windows.
+- when activity is topped . It should release big resources and only acquire them back
+  when resumed
+- layout is also view but derived from viewgroup
+- all activity must be listed in manifest file but they don't need intent filter if they
+  are not to be used by other apps.
+- explicit intend is specified with the exact class name of the activity to be activated
+- finish() and finishActivity() can be called to finish activity of itselfnor other
+  activity but these method should not be called unless it's really necessary
+- all life cycle methods of activity must call super class before doing anything else
+- broadcast receiver should be created and registered in onStart and unregistered in
+  onStop
+- onSaveInstanceStates can be used to save off transient states. These states are given
+  back as bundle when activity is recreated. This method may not always be called though
+  such as when the user press back and pop activity off the stack
+- screen rotation destroy the current activity and recreate it
+
+Task and Back Stack
+===================
+- A new task stack is created from the home screen/launcher if it doesn't exists yet. The
+  stack comes to top when no more activities in it.
+- Activities in the statck are never rearranged. It contains activities from both the
+  application that owns the task stack and other activities from other apps.
+- Activity is destroyed once it's popped off the stack
+- task and its activities transition as a single unit. When a task is put into background,
+  all activities are stopped. When the task becomes foreground again, the top activity is
+  resumed.
+- Same activity can be instantiated multiple times from different task and even in the
+  same task. This is because task is never rearranged so if you starts an activity from
+  multiple point, it will be different instance
+- Although activities remain in the stack, they can be destroyed and recreated
+- launch mode which can be specified either in manifest file or parameter can change the
+  creation of task and activity. standard is the norm. singleTop will not create new
+  activity if it's already on top of a task stack. singleTask creates a new task if the
+  activity hasn't been created and reuse that task if it's there. singleInstance is like
+  singleTask except that the activity is the only activity in the newly created task.
+- Browser activity is an example of newTask activity
+- affinity allows an activity to move around between task - reparenting
+- task stack is cleared after the user doesn't do anything with it for some time. Only the
+  root activity in the task remains and gets restored however
+
+Services
+========
+- service is a component that doesn't have UI and run long task in the background. It can
+  be binded to a client so information can be exchanged and is directed
+- life cycle of a service is not tied to the activity that tasks it. It usually doesn't
+  return result and should stop when it's done
+- A service can be bound by multiple clients at once and it stays on only while a client
+  is still around
+- Service is invoked from the main thread of the process hosting it. So it does anything
+  long background task, do it in new thread otherwise the app in the same process will
+  freeze
+- A service can be started by activity's startService() and stopped either by stopSelf()
+  or stopService(). Its onStartCommand() is called.
+- A service can be bound by bindService(). Its onBind() is called. To prevent binding,
+  implement onBind() that always return null. If allows binding, an interview my be
+  provided in the form of IBinder
+- It has onCreate() and onDestroy() as life cycle and they are called before anything else
+  to perform any global initialization
+- Android kills service only when it's low in memory. A service should however be designed
+  to receover gracefully.
+- A service can be declared private if you don't want other app to start it
+- It can have intent filter as well as in activity
+- Two parent classes can be used: Service is the basic one. You will handle threading
+  yourself. IntentService maintains a single worker thread to handle multiple one at a
+  time. This forces serialization of the handling which may be good or bad. You only needs
+  to implement onHandleIntent(). This guy maintains work queue and supplies the work to
+  the work thread while it's there. It stops itself when nothing left.
+- Client can have service delivery result by providing PendingIntent in the intent that
+  starts the service. The PendingIntent wraps around a broadcase that service can use to
+  notify the client
+- foreground service is the service that's the user is aware of. MP3 player is one such
+  service and it must provide status to status bar. Call startForeground() which requires
+  notification to indiciate the service as foreground. Foreground service is less
+  subjective to be killed than background
+- binding service is asynchronous. Client must implement ServiceConnection to monitor when
+  the service becomes bound
+- onBind() is called only once for the first client connecting. The subsequent clients get
+  the first same IBind object
+- Three ways to implement service: extending Binder class and return it to the client.
+  Suitable for same-process client. Client can just use its public method directly; use
+  Messenger and define Handler for different messages. Good for simple IPC; last is using
+  AIDL that define CORBA-like that transforms information back and forth between
+  processes. In fact Messenger uses AIDL in a generic way so the implementation of a
+  service doesn't have to create custom AIDL but when the interface becomes complicate,
+  Messenger becomes less attractive.
+- Messenger is a bit complicate when client needs returned value from service. Basically,
+  just like pipe, client needs to creates its own Messenger and pass it in when calling
+  its Messagner.send() as replyTo field in the message. Then the service uses it to send()
+  result back.
+- Note that IBinder itself can be used raw to do all information transofrmation but client
+  and service will need to deal with Parcel data directly. In simple case, this may be
+  desired.
+- Android destroy a service as soon as all client are unbound and only if it's also not
+  started by startService()
+
+Content Provider
+================
+- It's the only way to allow data sharing between processes
+- To get to a content provider, one uses ContentResolver
+- Data communicated through content provider must use database table model: record and
+  field. Each record has a unique id.
+- A query to content provider returns a cursor. A cursor moves from one record to another.
+  To read data from a field, you need to know the type first
+- A data set of from a content provider is like a table and represeted by a URL (wrapped
+  in URI) 
+- A query must be managed when activity is paused and resumed. Activity base class can do
+  that via manageQuery. Unmanaged query can be obtained directly from content resolver and
+  you can call startManageQuery to let activity do that. Query should be unloaded when
+  pause and requeried when resumed.
+- The last element of URI is record id. Specify it when only need one record
+- Query doesn't give out an explicit record object. It has implicity pointer and moves
+  internally. Each record field is read by calling query's method
+- Add a record is also done by ContentResolver with the provider URI. When added, a unique
+  URI for that record is returned. All values for the record is captured in ContentValues
+  object.
+- for large binary data, use content: URI to point to external storage and call
+  ContentResolver to open up output stream to write the data to.
+- To implement a content provider, extend a class from ContentProvider and implements
+  abstract methods
+- A content provider must be implemented in a thread-safe manner as it can be called from
+  many places and clients but they all point to the same instance
+- Each content provider must have CONTENT_URI static member that uniquely identify the
+  provider. It should also provide other contant static member for other entities it
+  provides
+- All content providers must be declared in manifest file with the authoritie. All sub
+  authorities do not need to be declared.
+
+
+Fragment
+========
+- fragment represents behavior or portions of the ui of an activity. It can be embedded in
+  the ui hiearchy and enclosed by activity's life cycle. It also has its own sub life
+  cycle. It doesn't have to be visible on screen as it can be used behind the scene. But
+  if it's visible, it will lives in a ViewGroup
+-  
+
